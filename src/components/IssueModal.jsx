@@ -1,5 +1,11 @@
 import { useState, useEffect } from 'react';
-import { COLUMN_TITLES, KANBAN_COLUMNS } from '../lib/constants';
+import {
+  COLUMN_TITLES,
+  KANBAN_COLUMNS,
+  TYPE_KEYS,
+  TYPE_CONFIG,
+  extractIssueType,
+} from '../lib/constants';
 
 export default function IssueModal({
   issue,
@@ -12,12 +18,14 @@ export default function IssueModal({
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [column, setColumn] = useState(defaultColumn || 'backlog');
+  const [issueType, setIssueType] = useState('');
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (issue) {
       setTitle(issue.title);
       setBody(issue.body || '');
+      setIssueType(extractIssueType(issue.labels || []) || '');
     }
   }, [issue]);
 
@@ -27,9 +35,9 @@ export default function IssueModal({
 
     setSaving(true);
     if (isEditing) {
-      await onUpdate(issue.number, title.trim(), body.trim());
+      await onUpdate(issue.number, title.trim(), body.trim(), issueType || null);
     } else {
-      await onCreate(title.trim(), body.trim(), column);
+      await onCreate(title.trim(), body.trim(), column, issueType || null);
     }
     setSaving(false);
     onClose();
@@ -81,6 +89,24 @@ export default function IssueModal({
               rows={6}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-mono"
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Type
+            </label>
+            <select
+              value={issueType}
+              onChange={(e) => setIssueType(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+            >
+              <option value="">No type</option>
+              {TYPE_KEYS.map((key) => (
+                <option key={key} value={key}>
+                  {TYPE_CONFIG[key].label}
+                </option>
+              ))}
+            </select>
           </div>
 
           {!isEditing && (

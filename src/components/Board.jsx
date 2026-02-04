@@ -150,11 +150,11 @@ export default function Board({
           issue={modalState.issue}
           defaultColumn={modalState.column}
           onClose={handleCloseModal}
-          onCreate={(title, body, column) =>
-            onCreate(owner, repo, title, body, column)
+          onCreate={(title, body, column, issueType) =>
+            onCreate(owner, repo, title, body, column, issueType)
           }
-          onUpdate={(number, title, body) =>
-            onUpdate(owner, repo, number, title, body)
+          onUpdate={(number, title, body, issueType) =>
+            onUpdate(owner, repo, number, title, body, issueType)
           }
         />
       )}

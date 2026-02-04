@@ -3,6 +3,7 @@ import { getOctokit } from '../lib/github';
 import {
   KANBAN_LABELS,
   KANBAN_COLUMNS,
+  TYPE_LABELS,
   extractKanbanColumn,
 } from '../lib/constants';
 
@@ -21,7 +22,8 @@ export function useIssues() {
       });
     const existingNames = existingLabels.map((l) => l.name);
 
-    for (const label of KANBAN_LABELS) {
+    const allLabels = [...KANBAN_LABELS, ...TYPE_LABELS];
+    for (const label of allLabels) {
       if (!existingNames.includes(label.name)) {
         try {
           await octokit.rest.issues.createLabel({ owner, repo, ...label });
@@ -134,9 +136,12 @@ export function useIssues() {
     []
   );
 
-  const createIssue = useCallback(async (owner, repo, title, body, column) => {
+  const createIssue = useCallback(async (owner, repo, title, body, column, issueType) => {
     const octokit = getOctokit();
     if (!octokit) return null;
+
+    const labels = [`kanban:${column}`];
+    if (issueType) labels.push(`type:${issueType}`);
 
     try {
       const { data } = await octokit.rest.issues.create({
@@ -144,7 +149,7 @@ export function useIssues() {
         repo,
         title,
         body,
-        labels: [`kanban:${column}`],
+        labels,
       });
 
       setIssues((prev) => {
@@ -161,17 +166,29 @@ export function useIssues() {
   }, []);
 
   const updateIssue = useCallback(
-    async (owner, repo, issueNumber, title, body) => {
+    async (owner, repo, issueNumber, title, body, issueType) => {
       const octokit = getOctokit();
       if (!octokit) return null;
 
       try {
+        // Fetch current labels to preserve non-type labels
+        const { data: current } = await octokit.rest.issues.get({
+          owner,
+          repo,
+          issue_number: issueNumber,
+        });
+        const labels = current.labels
+          .map((l) => l.name)
+          .filter((l) => !l.startsWith('type:'));
+        if (issueType) labels.push(`type:${issueType}`);
+
         const { data } = await octokit.rest.issues.update({
           owner,
           repo,
           issue_number: issueNumber,
           title,
           body,
+          labels,
         });
 
         setIssues((prev) => {

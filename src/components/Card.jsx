@@ -1,7 +1,10 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { extractIssueType, TYPE_CONFIG } from '../lib/constants';
 
 export default function Card({ issue, onClick }) {
+  const issueType = extractIssueType(issue.labels || []);
+  const typeConfig = issueType ? TYPE_CONFIG[issueType] : null;
   const {
     attributes,
     listeners,
@@ -35,6 +38,19 @@ export default function Card({ issue, onClick }) {
         isDragging ? 'opacity-50 shadow-lg' : ''
       }`}
     >
+      {typeConfig && (
+        <span
+          className="inline-block px-1.5 py-0.5 text-xs font-semibold rounded mb-1.5"
+          style={{
+            backgroundColor: typeConfig.bg,
+            color: typeConfig.color,
+            border: `1px solid ${typeConfig.border}`,
+          }}
+        >
+          {typeConfig.label}
+        </span>
+      )}
+
       <div className="flex items-start justify-between gap-2">
         <span className="text-sm font-medium text-gray-900 leading-snug">
           {issue.title}
@@ -45,7 +61,7 @@ export default function Card({ issue, onClick }) {
       {issue.labels && issue.labels.length > 0 && (
         <div className="flex flex-wrap gap-1 mt-2">
           {issue.labels
-            .filter((l) => !l.name?.startsWith('kanban:'))
+            .filter((l) => !l.name?.startsWith('kanban:') && !l.name?.startsWith('type:'))
             .map((label) => (
               <span
                 key={label.id || label.name}
