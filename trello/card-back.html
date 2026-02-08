@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Cover Color Info</title>
+  <link rel="stylesheet" href="https://p.trellocdn.com/power-up.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="card-back-info" id="info"></div>
+
+  <script src="https://p.trellocdn.com/power-up.min.js"></script>
+  <script src="js/config.js"></script>
+  <script>
+    var config = window.COVER_COLORS_CONFIG;
+    var t = TrelloPowerUp.iframe({
+      appKey: config.APP_KEY,
+      appName: config.APP_NAME,
+    });
+
+    t.render(function () {
+      return Promise.all([
+        t.get('card', 'shared', 'coverColor'),
+        t.get('card', 'shared', 'coverSize'),
+      ]).then(function (results) {
+        var color = results[0];
+        var size = results[1] || 'normal';
+        var container = document.getElementById('info');
+
+        if (!color) {
+          container.innerHTML = '<span style="color:#5e6c84;font-size:13px;">No cover color set</span>';
+          return;
+        }
+
+        container.innerHTML =
+          '<div class="card-back-swatch" style="background-color:' + color + ';"></div>' +
+          '<span class="card-back-text">' + color + '</span>' +
+          '<span class="card-back-size">' + size + '</span>';
+      });
+    });
+  </script>
+</body>
+</html>
