@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Set Cover Color</title>
+  <link rel="stylesheet" href="https://p.trellocdn.com/power-up.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Authorization prompt -->
+  <div id="auth-section" class="section" style="display: none;">
+    <p class="auth-message">
+      Authorize this Power-Up to set card cover colors.
+    </p>
+    <button class="mod-primary" id="authorize-btn">Authorize</button>
+  </div>
+
+  <!-- Color picker UI -->
+  <div id="picker-section" style="display: none;">
+
+    <!-- Trello native colors -->
+    <div class="section">
+      <label class="section-label">Trello Colors</label>
+      <div class="color-grid" id="trello-colors"></div>
+    </div>
+
+    <!-- Extended palette -->
+    <div class="section">
+      <label class="section-label">Extended Palette</label>
+      <div class="color-grid" id="extended-colors"></div>
+    </div>
+
+    <!-- Custom hex color -->
+    <div class="section">
+      <label class="section-label">Custom Color</label>
+      <div class="custom-color-row">
+        <input type="color" id="color-input" value="#0079BF" class="color-well">
+        <input type="text" id="hex-input" value="#0079BF" maxlength="7"
+               placeholder="#0079BF" class="hex-field" spellcheck="false">
+        <div class="color-preview" id="color-preview"></div>
+      </div>
+    </div>
+
+    <!-- Cover size -->
+    <div class="section">
+      <label class="section-label">Cover Size</label>
+      <div class="size-options">
+        <button class="size-btn active" data-size="normal" id="size-normal">
+          <span class="size-icon size-icon-normal"></span>
+          Normal
+        </button>
+        <button class="size-btn" data-size="full" id="size-full">
+          <span class="size-icon size-icon-full"></span>
+          Full
+        </button>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions">
+      <button class="mod-primary apply-btn" id="apply-btn">Apply Cover</button>
+      <button class="mod-danger remove-btn" id="remove-btn">Remove Cover</button>
+    </div>
+
+    <!-- Loading overlay -->
+    <div id="loading" class="loading-overlay" style="display: none;">
+      <div class="spinner"></div>
+    </div>
+  </div>
+
+  <!-- Error display -->
+  <div id="error-msg" class="error-banner" style="display: none;"></div>
+
+  <script src="https://p.trellocdn.com/power-up.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/color-picker.js"></script>
+</body>
+</html>
