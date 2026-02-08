@@ -191,15 +191,17 @@
   }
 
   // ---- Canvas image generation for custom colors ----
+  // Uses a minimal 1x1 JPEG at low quality — Trello stretches the
+  // solid-color image to fill the cover, so resolution doesn't matter.
   function generateColorImage(hexColor) {
     var canvas = document.createElement('canvas');
-    canvas.width = 640;
-    canvas.height = 200;
+    canvas.width = 1;
+    canvas.height = 1;
     var ctx = canvas.getContext('2d');
     ctx.fillStyle = hexColor;
-    ctx.fillRect(0, 0, 640, 200);
+    ctx.fillRect(0, 0, 1, 1);
     return new Promise(function (resolve) {
-      canvas.toBlob(resolve, 'image/png');
+      canvas.toBlob(resolve, 'image/jpeg', 0.5);
     });
   }
 
@@ -283,9 +285,9 @@
         formData.append('token', token);
         formData.append(
           'name',
-          'cover-color-' + hexColor.replace('#', '') + '.png'
+          'cover-color-' + hexColor.replace('#', '') + '.jpg'
         );
-        formData.append('file', blob, 'cover.png');
+        formData.append('file', blob, 'cover.jpg');
         formData.append('setCover', 'false');
 
         return fetch(
