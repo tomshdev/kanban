@@ -15,6 +15,6 @@
  */
 
 window.COVER_COLORS_CONFIG = {
-  APP_KEY: 'YOUR_API_KEY_HERE',
+  APP_KEY: '5525c98b880b031f25a020933ea17948',
   APP_NAME: 'Cover Colors'
 };
