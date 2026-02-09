@@ -203,15 +203,15 @@
   }
 
   // ---- Canvas image generation for custom colors ----
-  // Uses a minimal 1x1 JPEG at low quality — Trello stretches the
-  // solid-color image to fill the cover, so resolution doesn't matter.
+  // 320x160 solid-color JPEG — large enough for Trello to render
+  // a proper cover, but still only ~500 bytes for a flat fill.
   function generateColorImage(hexColor) {
     var canvas = document.createElement('canvas');
-    canvas.width = 1;
-    canvas.height = 1;
+    canvas.width = 320;
+    canvas.height = 160;
     var ctx = canvas.getContext('2d');
     ctx.fillStyle = hexColor;
-    ctx.fillRect(0, 0, 1, 1);
+    ctx.fillRect(0, 0, 320, 160);
     return new Promise(function (resolve) {
       canvas.toBlob(resolve, 'image/jpeg', 0.5);
     });
