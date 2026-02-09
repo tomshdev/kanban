@@ -65,6 +65,18 @@
 
   // ---- Initialization ----
   function init() {
+    // Bind authorize button immediately so it works before showPicker
+    authorizeBtn.addEventListener('click', function () {
+      t.getRestApi()
+        .authorize({ scope: 'read,write' })
+        .then(function () {
+          showPicker();
+        })
+        .catch(function () {
+          showError('Authorization was denied or failed.');
+        });
+    });
+
     t.render(function () {
       return t
         .getRestApi()
@@ -431,18 +443,6 @@
 
   // ---- Event binding ----
   function bindEvents() {
-    // Authorization
-    authorizeBtn.addEventListener('click', function () {
-      t.getRestApi()
-        .authorize({ scope: 'read,write' })
-        .then(function () {
-          showPicker();
-        })
-        .catch(function () {
-          showError('Authorization was denied or failed.');
-        });
-    });
-
     // Native color picker
     colorInput.addEventListener('input', function () {
       var hex = colorInput.value.toUpperCase();
